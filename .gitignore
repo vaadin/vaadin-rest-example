@@ -6,3 +6,4 @@ hs_err_pid*
 .project
 .settings/
 node_modules/
+.DS_Store

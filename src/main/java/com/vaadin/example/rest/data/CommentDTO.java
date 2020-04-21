@@ -1,11 +1,8 @@
 package com.vaadin.example.rest.data;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-
 /**
  * DTO class for example 1, fetching using a DTO.
  */
-@JsonIgnoreProperties(ignoreUnknown = true)
 public class CommentDTO {
 
 	private int postId;
