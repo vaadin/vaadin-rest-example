@@ -1,5 +1,8 @@
 package com.vaadin.example.backend;
 
+/**
+ * Backend data entity used in {@link RESTProvider}.
+ */
 public class RESTData {
 
 	private int id;

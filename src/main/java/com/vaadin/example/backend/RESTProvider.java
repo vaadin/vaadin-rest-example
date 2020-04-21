@@ -25,6 +25,9 @@ public class RESTProvider {
 	private static final int MAX_COUNT = 500;
 	private static final int SIZE = 10000;
 
+	/**
+	 * Random words used for generating data
+	 */
 	private static final String[] words;
 	static {
 
@@ -34,14 +37,31 @@ public class RESTProvider {
 		words = LOREM_IPSUM.split(" ");
 	}
 
-	private final TreeMap<Integer, RESTData> BACKEND = new TreeMap<>();
 	private final Random rand = new Random();
 
+	/**
+	 * Replacement for a DB. Is lazily populated by demand.
+	 */
+	private final TreeMap<Integer, RESTData> BACKEND = new TreeMap<>();
+
+	/**
+	 * REST API for getting the total count of items
+	 * <p>
+	 * GET http://localhost:8080/count
+	 */
 	@GetMapping("/count")
 	public int count() {
 		return SIZE;
 	}
 
+	/**
+	 * REST API for getting the items themselves
+	 * <p>
+	 * GET http://localhost:8080/data?count=50&offset=400
+	 *
+	 * @param count  how many items should be returned
+	 * @param offset from what index the data should start
+	 */
 	@GetMapping("/data")
 	public List<RESTData> data(int count, int offset) {
 
@@ -50,8 +70,10 @@ public class RESTProvider {
 			throw new RuntimeException("indexes outside bounds");
 		}
 
+		// make sure data is generated
 		ensureData(count, offset);
 
+		// fetch subset from the map
 		final List<RESTData> list = new ArrayList<>(BACKEND.subMap(offset, offset + count).values());
 
 		return list;

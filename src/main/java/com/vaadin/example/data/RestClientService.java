@@ -18,7 +18,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.vaadin.flow.data.provider.DataProvider;
 
 /**
- * Example service that connects to a REST API.
+ * Example Spring service that connects to a REST API.
  * <p>
  * The class has three different examples for fetching data.
  * <p>
@@ -102,7 +102,7 @@ public class RestClientService implements Serializable {
 	 */
 	public Stream<DataDTO> fetchData(int count, int offset) {
 
-		System.out.println(String.format("Fetching partial data set %d through %d", offset, offset + count));
+		System.out.println(String.format("Fetching partial data set %d through %d...", offset, offset + count));
 
 		// We use a local provider for this bigger data set.
 		// The API has two methods, 'data' and 'count'.
@@ -114,7 +114,7 @@ public class RestClientService implements Serializable {
 
 		final List<DataDTO> posts = Arrays.asList(response);
 
-		System.out.println(String.format("received %d items.", posts.size()));
+		System.out.println(String.format("...received %d items.", posts.size()));
 		return posts.stream();
 	}
 
@@ -131,7 +131,7 @@ public class RestClientService implements Serializable {
 		final String url = String.format("http://localhost:8080/count");
 		final Integer response = template.getForObject(url, Integer.class);
 
-		System.out.println("Count is " + response);
+		System.out.println("...count is " + response);
 		return response;
 
 	}
