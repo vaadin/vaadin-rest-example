@@ -1,0 +1,1 @@
+# vaadin-rest-example
