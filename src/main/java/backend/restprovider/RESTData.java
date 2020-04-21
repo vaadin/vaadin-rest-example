@@ -1,4 +1,4 @@
-package com.vaadin.example.backend;
+package backend.restprovider;
 
 /**
  * Backend data entity used in {@link RESTProvider}.

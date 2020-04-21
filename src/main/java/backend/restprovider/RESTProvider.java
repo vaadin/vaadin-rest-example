@@ -1,4 +1,4 @@
-package com.vaadin.example.backend;
+package backend.restprovider;
 
 import java.util.ArrayList;
 import java.util.List;
