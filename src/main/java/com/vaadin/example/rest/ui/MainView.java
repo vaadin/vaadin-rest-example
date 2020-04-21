@@ -7,6 +7,7 @@ import com.vaadin.example.rest.data.CommentDTO;
 import com.vaadin.example.rest.data.DataDTO;
 import com.vaadin.example.rest.data.RestClientService;
 import com.vaadin.flow.component.button.Button;
+import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.grid.ColumnTextAlign;
 import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
@@ -39,6 +40,7 @@ public class MainView extends VerticalLayout {
 		// Fetch all entities and show
 		final Button fetchComments = new Button("Fetch all comments",
 				e -> commentsGrid.setItems(service.getAllComments()));
+		fetchComments.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
 
 		add(fetchComments, commentsGrid);
 	}
@@ -61,6 +63,7 @@ public class MainView extends VerticalLayout {
 		// Fetch all data and show
 		final Button fetchPosts = new Button("Fetch all posts", e -> postsGrid.setItems(service.getAllPosts()));
 
+		fetchPosts.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
 		add(fetchPosts, postsGrid);
 	}
 
@@ -77,12 +80,12 @@ public class MainView extends VerticalLayout {
 		// We need two methods in the API; a method that returns a specific number of
 		// items, and a method that returns the total amount of available data as an
 		// integer.
-		final Grid<DataDTO> testgrid = new Grid<DataDTO>();
+		final Grid<DataDTO> dataGrid = new Grid<DataDTO>();
 
-		testgrid.addColumn(DataDTO::getTitle).setHeader("Post title").setWidth("300px");
-		testgrid.addColumn(DataDTO::getMessage).setHeader("Post body").getFlexGrow();
+		dataGrid.addColumn(DataDTO::getTitle).setHeader("Post title").setWidth("300px");
+		dataGrid.addColumn(DataDTO::getMessage).setHeader("Post body").getFlexGrow();
 
-		final Button testbutton = new Button("Create lazy provider", e -> {
+		final Button fetchData = new Button("Create lazy provider", e -> {
 
 			// Here we give the DataProvider our two callback methods. The Grid will call
 			// them on demand. The second type in the declaration (Void) is a filter type;
@@ -90,9 +93,11 @@ public class MainView extends VerticalLayout {
 			final DataProvider<DataDTO, Void> lazyProvider = DataProvider
 					.fromCallbacks(q -> service.fetchData(q.getLimit(), q.getOffset()), q -> service.fetchCount());
 
-			testgrid.setDataProvider(lazyProvider);
+			dataGrid.setDataProvider(lazyProvider);
 		});
 
-		add(testbutton, testgrid);
+		fetchData.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
+
+		add(fetchData, dataGrid);
 	}
 }

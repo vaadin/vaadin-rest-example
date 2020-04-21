@@ -56,6 +56,8 @@ public class RestClientService implements Serializable {
 		final CommentDTO[] comments = template.getForObject("https://jsonplaceholder.typicode.com/comments",
 				CommentDTO[].class);
 
+		System.out.println(String.format("...received %d items.", comments.length));
+
 		return Arrays.asList(comments);
 	}
 
@@ -86,6 +88,9 @@ public class RestClientService implements Serializable {
 
 			final List<JsonNode> posts = new ArrayList<>();
 			root.forEach(n -> posts.add(n));
+
+			System.out.println(String.format("...received %d items.", posts.size()));
+
 			return posts;
 
 		} catch (final JsonProcessingException e) {
@@ -107,7 +112,7 @@ public class RestClientService implements Serializable {
 		// We use a local provider for this bigger data set.
 		// The API has two methods, 'data' and 'count'.
 
-		// Other than that, this method is similar to #getAllPosts().
+		// Other than that, this method is similar to #getAllComments().
 		final RestTemplate template = restTemplateBuilder.build();
 		final String url = String.format("http://localhost:8080/data?count=%d&offset=%d", count, offset);
 		final DataDTO[] response = template.getForObject(url, DataDTO[].class);

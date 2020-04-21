@@ -65,7 +65,7 @@ public class RESTProvider {
 	@GetMapping("/data")
 	public List<RESTData> data(int count, int offset) {
 
-		System.out.println("BACKEND providing items " + offset + " to " + (offset + count));
+		System.out.println("Backend providing items " + offset + " to " + (offset + count));
 		if (count > MAX_COUNT || count + offset > SIZE) {
 			throw new RuntimeException("indexes outside bounds");
 		}
