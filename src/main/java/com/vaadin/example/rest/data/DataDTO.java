@@ -1,4 +1,4 @@
-package com.vaadin.example.data;
+package com.vaadin.example.rest.data;
 
 /**
  * DTO class for example 3, lazily fetching partial data with a DTO.

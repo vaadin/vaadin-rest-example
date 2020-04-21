@@ -1,9 +1,15 @@
-# Project Base for Vaadin and Spring Boot
+# Example app for using REST services with Vaadin and Spring Boot
 
-This project can be used as a starting point to create your own Vaadin application with Spring Boot.
-It contains all the necessary configuration and some placeholder files to get you started.
+This example application demonstrates three ways of connecting your Vaadin and Spring Boot application to a REST backend. The examples are
 
-The best way to create your own project based on this starter is [start.vaadin.com](https://start.vaadin.com/) - you can get only the necessary parts and choose the package naming you want to use.
+1) Using a DTO class to fetch and display all results from a REST API
+2) Using dynamic JSON to fetch and display all results from a REST API
+3) Using a DTO class to lazily fetch and display data from REST on demand
+
+The main class of this app is com.vaadin.example.rest.ui.MainView, where we create our three demos. The UI classes use DTO classes and a Spring service located in the com.vaadin.example.rest.data package.
+
+The backend.restprovider package is not part of the demo; it is an implementation of a 3rd party REST API so that we don't need to depend on an actual one. The classes provide a REST API running on localhost, with two API methods, 'count' and 'data'.
+
 
 ## Running the Application
 

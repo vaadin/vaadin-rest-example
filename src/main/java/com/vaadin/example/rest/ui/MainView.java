@@ -1,11 +1,11 @@
-package com.vaadin.example.ui;
+package com.vaadin.example.rest.ui;
 
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.fasterxml.jackson.databind.JsonNode;
-import com.vaadin.example.data.CommentDTO;
-import com.vaadin.example.data.DataDTO;
-import com.vaadin.example.data.RestClientService;
+import com.vaadin.example.rest.data.CommentDTO;
+import com.vaadin.example.rest.data.DataDTO;
+import com.vaadin.example.rest.data.RestClientService;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.grid.ColumnTextAlign;
 import com.vaadin.flow.component.grid.Grid;

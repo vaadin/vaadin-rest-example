@@ -1,4 +1,4 @@
-package com.vaadin.example.data;
+package com.vaadin.example.rest.data;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 

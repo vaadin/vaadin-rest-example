@@ -1,4 +1,4 @@
-package com.vaadin.example.data;
+package com.vaadin.example.rest.data;
 
 import java.io.Serializable;
 import java.util.ArrayList;
