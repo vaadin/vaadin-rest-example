@@ -7,3 +7,5 @@ hs_err_pid*
 .settings/
 node_modules/
 .DS_Store
+restexampleapp.iml
+.idea/
