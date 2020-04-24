@@ -25,6 +25,6 @@ To run Integration Tests, execute `mvn verify -Pintegration-tests`.
 
 ## More Information
 
-- [Vaadin Flow](https://vaadin.com/flow) documentation
+- [Vaadin documentation](https://vaadin.com/docs)
 - [Using Vaadin and Spring](https://vaadin.com/docs/v14/flow/spring/tutorial-spring-basic.html) article
 
