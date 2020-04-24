@@ -29,7 +29,7 @@ public class HomeView extends Main {
 				new Paragraph(
 						"The second example does not use a DTO, but raw JSON instead using the Jackson library included with Spring. This approach works well when the received data is dynamic in nature, or you don't want to create a DTO.")));
 
-		add(new Section(new H2(new RouterLink("Calling a REST service aysnchronously", AsyncInMemoryDTOView.class)),
+		add(new Section(new H2(new RouterLink("Calling a REST service asynchronously", AsyncInMemoryDTOView.class)),
 				new Paragraph(
 						"This example fetches the same data as the first example, but asychronously. This helps when the REST server is slow; starting the REST fetch does not block the application. The same method can be used with the second example as well, but not for lazy providers (the last example).")));
 
