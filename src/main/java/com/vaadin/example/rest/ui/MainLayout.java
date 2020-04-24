@@ -8,6 +8,7 @@ import com.vaadin.flow.component.html.Header;
 import com.vaadin.flow.component.html.ListItem;
 import com.vaadin.flow.component.html.Nav;
 import com.vaadin.flow.component.html.UnorderedList;
+import com.vaadin.flow.component.page.Push;
 import com.vaadin.flow.router.AfterNavigationEvent;
 import com.vaadin.flow.router.AfterNavigationObserver;
 import com.vaadin.flow.router.RouterLink;
@@ -20,11 +21,13 @@ import com.vaadin.flow.router.RouterLink;
  * our {@link RestClientService) class.
  */
 @CssImport("./styles/shared-styles.css")
+@Push
 public class MainLayout extends AppLayout implements AfterNavigationObserver {
 
 	private final H1 pageTitle;
 	private final RouterLink home;
 	private final RouterLink inMemoryDTO;
+	private final RouterLink asyncInMemoryDTO;
 	private final RouterLink inMemoryJSON;
 	private final RouterLink lazyDTO;
 
@@ -32,11 +35,12 @@ public class MainLayout extends AppLayout implements AfterNavigationObserver {
 		// Navigation
 		home = new RouterLink("Home", HomeView.class);
 		inMemoryDTO = new RouterLink("In-Memory DTO", InMemoryDTOView.class);
+		asyncInMemoryDTO = new RouterLink("Asynchronous DTO", AsyncInMemoryDTOView.class);
 		inMemoryJSON = new RouterLink("In-Memory JSON", InMemoryJSONView.class);
 		lazyDTO = new RouterLink("Lazy DTO", LazyDTOView.class);
 
 		final UnorderedList list = new UnorderedList(new ListItem(home), new ListItem(inMemoryDTO),
-				new ListItem(inMemoryJSON), new ListItem(lazyDTO));
+				new ListItem(asyncInMemoryDTO), new ListItem(inMemoryJSON), new ListItem(lazyDTO));
 		final Nav navigation = new Nav(list);
 		addToDrawer(navigation);
 		setPrimarySection(Section.DRAWER);
