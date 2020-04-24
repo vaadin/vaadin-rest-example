@@ -4,7 +4,8 @@ This example application demonstrates three ways of connecting your Vaadin and S
 
 1) Using a DTO class to fetch and display all results from a REST API
 2) Using dynamic JSON to fetch and display all results from a REST API
-3) Using a DTO class to lazily fetch and display data from REST on demand
+3) Calling REST services asynchronously
+4) Using a DTO class to lazily fetch and display data from REST on demand
 
 The main class of this app is com.vaadin.example.rest.ui.MainView, where we create our three demos. The UI class uses DTOs and a Spring service located in the com.vaadin.example.rest.data package.
 
