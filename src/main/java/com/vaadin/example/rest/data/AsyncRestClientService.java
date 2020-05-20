@@ -1,16 +1,11 @@
 package com.vaadin.example.rest.data;
 
 import java.io.Serializable;
-import java.util.Arrays;
 import java.util.List;
-import java.util.concurrent.Executor;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.stereotype.Service;
-import org.springframework.web.client.RestTemplate;
-
-import com.vaadin.example.rest.Application;
+import org.springframework.web.reactive.function.client.WebClient;
+import org.springframework.web.reactive.function.client.WebClient.RequestHeadersSpec;
 
 /**
  * Example Spring service that connects to a REST API asynchronously.
@@ -22,48 +17,42 @@ import com.vaadin.example.rest.Application;
 @Service
 public class AsyncRestClientService implements Serializable {
 
-	@Autowired
-	private RestTemplateBuilder restTemplateBuilder;
+    /**
+     * Generic callback interface for asynchronous operations.
+     *
+     * @param <T> the result type
+     */
+    public static interface AsyncRestCallback<T> {
+        void operationFinished(T results);
+    }
 
-	/**
-	 * Default executor, configured in the {@link Application} class
-	 */
-	@Autowired
-	private Executor threadPool;
+    /**
+     * Returns parsed {@link CommentDTO} objects from the REST service,
+     * asynchronously.
+     */
+    public void getAllCommentsAsync(AsyncRestCallback<List<CommentDTO>> callback) {
 
-	/**
-	 * Generic callback interface for asynchronous operations.
-	 * 
-	 * @param <T> the result type
-	 */
-	public static interface AsyncRestCallback<T> {
-		void operationFinished(T results);
-	}
+        System.out.println("Setting up fetching all Comment objects through REST..");
 
-	/**
-	 * Returns parsed {@link CommentDTO} objects from the REST service,
-	 * asynchronously.
-	 */
-	public void getAllCommentsAsync(AsyncRestCallback<List<CommentDTO>> readyCallback) {
+        // Configure fetch as normal
+        RequestHeadersSpec<?> spec = WebClient.create().get().uri("https://jsonplaceholder.typicode.com/comments");
 
-		System.out.println("Creating separate Thread for fetching and processing results.");
+        // But instead of 'block', do 'subscribe'. This means the fetch will run on a
+        // separate thread and notify us when it's ready by calling our lambda
+        // operation.
+        spec.retrieve().toEntityList(CommentDTO.class).subscribe(result -> {
 
-		// create a new background process that calls the REST API.
-		threadPool.execute(() -> {
-			System.out.println("Fetching all Comment objects through REST..");
+            // This code block is run whenever the results are back
 
-			final RestTemplate template = restTemplateBuilder.build();
+            // get results as usual
+            final List<CommentDTO> comments = result.getBody();
 
-			// Fetch from 3rd party API
-			final CommentDTO[] comments = template.getForObject("https://jsonplaceholder.typicode.com/comments",
-					CommentDTO[].class);
+            System.out.println(String.format("...received %d items.", comments.size()));
 
-			System.out.println(String.format("...received %d items.", comments.length));
+            // call the ui with the data
+            callback.operationFinished(comments);
+        });
 
-			// call the ui with the data
-			readyCallback.operationFinished(Arrays.asList(comments));
-		});
-
-	}
+    }
 
 }

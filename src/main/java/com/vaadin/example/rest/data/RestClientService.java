@@ -1,20 +1,14 @@
 package com.vaadin.example.rest.data;
 
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Stream;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.web.client.RestTemplateBuilder;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-import org.springframework.web.client.RestTemplate;
+import org.springframework.web.reactive.function.client.WebClient;
+import org.springframework.web.reactive.function.client.WebClient.RequestHeadersSpec;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.vaadin.flow.data.provider.DataProvider;
 
 /**
@@ -38,107 +32,86 @@ import com.vaadin.flow.data.provider.DataProvider;
 @Service
 public class RestClientService implements Serializable {
 
-	@Autowired
-	private RestTemplateBuilder restTemplateBuilder;
+    /**
+     * Returns parsed {@link CommentDTO} objects from the REST service.
+     *
+     * Useful when the response data has a known structure.
+     */
+    public List<CommentDTO> getAllComments() {
 
-	/**
-	 * Returns parsed {@link CommentDTO} objects from the REST service.
-	 *
-	 * Useful when the response data has a known structure.
-	 */
-	public List<CommentDTO> getAllComments() {
+        System.out.println("Fetching all Comment objects through REST..");
 
-		System.out.println("Fetching all Comment objects through REST..");
+        // Fetch from 3rd party API; configure fetch
+        RequestHeadersSpec<?> spec = WebClient.create().get().uri("https://jsonplaceholder.typicode.com/comments");
 
-		final RestTemplate template = restTemplateBuilder.build();
+        // do fetch and map result
+        List<CommentDTO> comments = spec.retrieve().toEntityList(CommentDTO.class).block().getBody();
 
-		// Fetch from 3rd party API
-		final CommentDTO[] comments = template.getForObject("https://jsonplaceholder.typicode.com/comments",
-				CommentDTO[].class);
+        System.out.println(String.format("...received %d items.", comments.size()));
 
-		System.out.println(String.format("...received %d items.", comments.length));
+        return comments;
+    }
 
-		return Arrays.asList(comments);
-	}
+    /**
+     * Returns non-parsed JSON response objects from the REST service.
+     *
+     * Useful when you don't want to create a DTO class, or the response data has a
+     * dynamic structure.
+     */
+    public List<JsonNode> getAllPosts() {
 
-	/**
-	 * Returns non-parsed JSON response objects from the REST service.
-	 *
-	 * Useful when you don't want to create a DTO class, or the response data has a
-	 * dynamic structure.
-	 */
-	public List<JsonNode> getAllPosts() {
+        System.out.println("Fetching all Post objects through REST..");
 
-		System.out.println("Fetching all Post objects through REST..");
+        // Fetch from 3rd party API; configure fetch
+        RequestHeadersSpec<?> spec = WebClient.create().get().uri("https://jsonplaceholder.typicode.com/posts");
 
-		final RestTemplate template = restTemplateBuilder.build();
+        // do fetch and map result
+        final List<JsonNode> posts = spec.retrieve().toEntityList(JsonNode.class).block().getBody();
 
-		// Fetch from 3rd party API
-		final ResponseEntity<String> response = template.getForEntity("https://jsonplaceholder.typicode.com/posts",
-				String.class);
+        System.out.println(String.format("...received %d items.", posts.size()));
 
-		try {
-			final ObjectMapper mapper = new ObjectMapper();
-			final JsonNode root = mapper.readTree(response.getBody());
+        return posts;
 
-			if (!root.isArray()) {
-				// Something went wrong, we should get an array
-				return null;
-			}
+    }
 
-			final List<JsonNode> posts = new ArrayList<>();
-			root.forEach(n -> posts.add(n));
+    /**
+     * Fetches the specified amount of data items starting from index 'offset' from
+     * the REST API.
+     */
+    public Stream<DataDTO> fetchData(int count, int offset) {
 
-			System.out.println(String.format("...received %d items.", posts.size()));
+        System.out.println(String.format("Fetching partial data set %d through %d...", offset, offset + count));
 
-			return posts;
+        // We use a local provider for this bigger data set.
+        // The API has two methods, 'data' and 'count'.
 
-		} catch (final JsonProcessingException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+        // Other than that, this method is similar to #getAllComments().
+        final String url = String.format("http://localhost:8080/data?count=%d&offset=%d", count, offset);
 
-		return null;
-	}
+        RequestHeadersSpec<?> spec = WebClient.create().get().uri(url);
+        final List<DataDTO> posts = spec.retrieve().toEntityList(DataDTO.class).block().getBody();
 
-	/**
-	 * Fetches the specified amount of data items starting from index 'offset' from
-	 * the REST API.
-	 */
-	public Stream<DataDTO> fetchData(int count, int offset) {
+        System.out.println(String.format("...received %d items.", posts.size()));
+        return posts.stream();
+    }
 
-		System.out.println(String.format("Fetching partial data set %d through %d...", offset, offset + count));
+    /**
+     * Fetches the total number of items available through the REST API
+     */
+    public int fetchCount() {
 
-		// We use a local provider for this bigger data set.
-		// The API has two methods, 'data' and 'count'.
+        System.out.println("fetching count...");
 
-		// Other than that, this method is similar to #getAllComments().
-		final RestTemplate template = restTemplateBuilder.build();
-		final String url = String.format("http://localhost:8080/data?count=%d&offset=%d", count, offset);
-		final DataDTO[] response = template.getForObject(url, DataDTO[].class);
+        // We use a local provider for this bigger data set.
+        // The API has two methods, 'data' and 'count'.
+        final String url = String.format("http://localhost:8080/count");
 
-		final List<DataDTO> posts = Arrays.asList(response);
+        RequestHeadersSpec<?> spec = WebClient.create().get().uri(url);
+        final Integer response = spec.retrieve().toEntity(Integer.class).block().getBody();
 
-		System.out.println(String.format("...received %d items.", posts.size()));
-		return posts.stream();
-	}
+        System.out.println("...count is " + response);
+        return response;
 
-	/**
-	 * Fetches the total number of items available through the REST API
-	 */
-	public int fetchCount() {
-
-		System.out.println("fetching count...");
-
-		// We use a local provider for this bigger data set.
-		// The API has two methods, 'data' and 'count'.
-		final RestTemplate template = restTemplateBuilder.build();
-		final String url = String.format("http://localhost:8080/count");
-		final Integer response = template.getForObject(url, Integer.class);
-
-		System.out.println("...count is " + response);
-		return response;
-
-	}
+    }
 
 }
