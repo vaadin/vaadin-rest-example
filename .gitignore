@@ -6,6 +6,10 @@ hs_err_pid*
 .project
 .settings/
 node_modules/
+webpack.generated.js
+webpack.config.js
+/package-lock.json
+/package.json
 .DS_Store
 restexampleapp.iml
 .idea/
