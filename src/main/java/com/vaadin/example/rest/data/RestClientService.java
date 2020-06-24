@@ -4,6 +4,7 @@ import java.io.Serializable;
 import java.util.List;
 import java.util.stream.Stream;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.reactive.function.client.WebClient.RequestHeadersSpec;
@@ -32,86 +33,93 @@ import com.vaadin.flow.data.provider.DataProvider;
 @Service
 public class RestClientService implements Serializable {
 
-    /**
-     * Returns parsed {@link CommentDTO} objects from the REST service.
-     *
-     * Useful when the response data has a known structure.
-     */
-    public List<CommentDTO> getAllComments() {
+	/**
+	 * The port changes depending on where we deploy the app
+	 */
+	@Value("${server.port}")
+	private String serverPort;
 
-        System.out.println("Fetching all Comment objects through REST..");
+	/**
+	 * Returns parsed {@link CommentDTO} objects from the REST service.
+	 *
+	 * Useful when the response data has a known structure.
+	 */
+	public List<CommentDTO> getAllComments() {
 
-        // Fetch from 3rd party API; configure fetch
-        RequestHeadersSpec<?> spec = WebClient.create().get().uri("https://jsonplaceholder.typicode.com/comments");
+		System.out.println("Fetching all Comment objects through REST..");
 
-        // do fetch and map result
-        List<CommentDTO> comments = spec.retrieve().toEntityList(CommentDTO.class).block().getBody();
+		// Fetch from 3rd party API; configure fetch
+		final RequestHeadersSpec<?> spec = WebClient.create().get()
+				.uri("https://jsonplaceholder.typicode.com/comments");
 
-        System.out.println(String.format("...received %d items.", comments.size()));
+		// do fetch and map result
+		final List<CommentDTO> comments = spec.retrieve().toEntityList(CommentDTO.class).block().getBody();
 
-        return comments;
-    }
+		System.out.println(String.format("...received %d items.", comments.size()));
 
-    /**
-     * Returns non-parsed JSON response objects from the REST service.
-     *
-     * Useful when you don't want to create a DTO class, or the response data has a
-     * dynamic structure.
-     */
-    public List<JsonNode> getAllPosts() {
+		return comments;
+	}
 
-        System.out.println("Fetching all Post objects through REST..");
+	/**
+	 * Returns non-parsed JSON response objects from the REST service.
+	 *
+	 * Useful when you don't want to create a DTO class, or the response data has a
+	 * dynamic structure.
+	 */
+	public List<JsonNode> getAllPosts() {
 
-        // Fetch from 3rd party API; configure fetch
-        RequestHeadersSpec<?> spec = WebClient.create().get().uri("https://jsonplaceholder.typicode.com/posts");
+		System.out.println("Fetching all Post objects through REST..");
 
-        // do fetch and map result
-        final List<JsonNode> posts = spec.retrieve().toEntityList(JsonNode.class).block().getBody();
+		// Fetch from 3rd party API; configure fetch
+		final RequestHeadersSpec<?> spec = WebClient.create().get().uri("https://jsonplaceholder.typicode.com/posts");
 
-        System.out.println(String.format("...received %d items.", posts.size()));
+		// do fetch and map result
+		final List<JsonNode> posts = spec.retrieve().toEntityList(JsonNode.class).block().getBody();
 
-        return posts;
+		System.out.println(String.format("...received %d items.", posts.size()));
 
-    }
+		return posts;
 
-    /**
-     * Fetches the specified amount of data items starting from index 'offset' from
-     * the REST API.
-     */
-    public Stream<DataDTO> fetchData(int count, int offset) {
+	}
 
-        System.out.println(String.format("Fetching partial data set %d through %d...", offset, offset + count));
+	/**
+	 * Fetches the specified amount of data items starting from index 'offset' from
+	 * the REST API.
+	 */
+	public Stream<DataDTO> fetchData(int count, int offset) {
 
-        // We use a local provider for this bigger data set.
-        // The API has two methods, 'data' and 'count'.
+		System.out.println(String.format("Fetching partial data set %d through %d...", offset, offset + count));
 
-        // Other than that, this method is similar to #getAllComments().
-        final String url = String.format("http://localhost:8080/data?count=%d&offset=%d", count, offset);
+		// We use a local provider for this bigger data set.
+		// The API has two methods, 'data' and 'count'.
 
-        RequestHeadersSpec<?> spec = WebClient.create().get().uri(url);
-        final List<DataDTO> posts = spec.retrieve().toEntityList(DataDTO.class).block().getBody();
+		// Other than that, this method is similar to #getAllComments().
+		final String url = String.format("http://localhost:" + serverPort + "/data?count=%d&offset=%d", count, offset);
 
-        System.out.println(String.format("...received %d items.", posts.size()));
-        return posts.stream();
-    }
+		final RequestHeadersSpec<?> spec = WebClient.create().get().uri(url);
+		final List<DataDTO> posts = spec.retrieve().toEntityList(DataDTO.class).block().getBody();
 
-    /**
-     * Fetches the total number of items available through the REST API
-     */
-    public int fetchCount() {
+		System.out.println(String.format("...received %d items.", posts.size()));
+		return posts.stream();
+	}
 
-        System.out.println("fetching count...");
+	/**
+	 * Fetches the total number of items available through the REST API
+	 */
+	public int fetchCount() {
 
-        // We use a local provider for this bigger data set.
-        // The API has two methods, 'data' and 'count'.
-        final String url = String.format("http://localhost:8080/count");
+		System.out.println("fetching count...");
 
-        RequestHeadersSpec<?> spec = WebClient.create().get().uri(url);
-        final Integer response = spec.retrieve().toEntity(Integer.class).block().getBody();
+		// We use a local provider for this bigger data set.
+		// The API has two methods, 'data' and 'count'.
+		final String url = String.format("http://localhost:" + serverPort + "/count");
 
-        System.out.println("...count is " + response);
-        return response;
+		final RequestHeadersSpec<?> spec = WebClient.create().get().uri(url);
+		final Integer response = spec.retrieve().toEntity(Integer.class).block().getBody();
 
-    }
+		System.out.println("...count is " + response);
+		return response;
+
+	}
 
 }
