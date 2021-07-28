@@ -8,7 +8,6 @@ import com.vaadin.flow.component.html.Header;
 import com.vaadin.flow.component.html.ListItem;
 import com.vaadin.flow.component.html.Nav;
 import com.vaadin.flow.component.html.UnorderedList;
-import com.vaadin.flow.component.page.Push;
 import com.vaadin.flow.router.AfterNavigationEvent;
 import com.vaadin.flow.router.AfterNavigationObserver;
 import com.vaadin.flow.router.RouterLink;
@@ -21,7 +20,6 @@ import com.vaadin.flow.router.RouterLink;
  * our {@link RestClientService) class.
  */
 @CssImport("./styles/shared-styles.css")
-@Push
 public class MainLayout extends AppLayout implements AfterNavigationObserver {
 
 	private final H1 pageTitle;
