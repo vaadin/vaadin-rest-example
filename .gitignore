@@ -13,3 +13,6 @@ webpack.config.js
 .DS_Store
 restexampleapp.iml
 .idea/
+
+src/main/dev-bundle
+frontend/generated
