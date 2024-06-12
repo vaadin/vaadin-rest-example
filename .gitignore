@@ -15,4 +15,4 @@ restexampleapp.iml
 .idea/
 
 src/main/dev-bundle
-frontend/generated
+src/main/frontend/generated
