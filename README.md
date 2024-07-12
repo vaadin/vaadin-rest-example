@@ -1,6 +1,6 @@
 # Example app for using REST services with Vaadin and Spring Boot
 
-[![Vaadin 14 REST Example](rest-example.png)](https://github.com/vaadin/vaadin-leaflet-example)
+![Screenshot](rest-example.png)
 
 This example application demonstrates three ways of connecting your Vaadin and Spring Boot application to a REST backend. The examples are
 
