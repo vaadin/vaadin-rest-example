@@ -1,20 +1,19 @@
 package com.vaadin.example.rest.ui;
 
-import org.springframework.beans.factory.annotation.Autowired;
-
 import com.fasterxml.jackson.databind.JsonNode;
 import com.vaadin.example.rest.data.RestClientService;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.grid.ColumnTextAlign;
 import com.vaadin.flow.component.grid.Grid;
-import com.vaadin.flow.component.html.Main;
+import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
+import org.springframework.beans.factory.annotation.Autowired;
 
 @PageTitle("In-Memory JSON | Vaadin REST Examples")
 @Route(value = "in-memory-json", layout = MainLayout.class)
-public class InMemoryJSONView extends Main {
+public class InMemoryJSONView extends VerticalLayout {
 
 	public InMemoryJSONView(@Autowired RestClientService service) {
 		// The second example does not use a DTO, but raw JSON instead using the Jackson

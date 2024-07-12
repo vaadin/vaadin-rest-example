@@ -1,20 +1,19 @@
 package com.vaadin.example.rest.ui;
 
-import org.springframework.beans.factory.annotation.Autowired;
-
 import com.vaadin.example.rest.data.DataDTO;
 import com.vaadin.example.rest.data.RestClientService;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.grid.Grid;
-import com.vaadin.flow.component.html.Main;
+import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.data.provider.DataProvider;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
+import org.springframework.beans.factory.annotation.Autowired;
 
 @PageTitle("Lazy DTO | Vaadin REST Examples")
 @Route(value = "lazy-dto", layout = MainLayout.class)
-public class LazyDTOView extends Main {
+public class LazyDTOView extends VerticalLayout {
 
 	public LazyDTOView(@Autowired RestClientService service) {
 		// The third example demonstrates how to create a lazy data provider for the

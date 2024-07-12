@@ -1,20 +1,19 @@
 package com.vaadin.example.rest.ui;
 
-import org.springframework.beans.factory.annotation.Autowired;
-
 import com.vaadin.example.rest.data.AsyncRestClientService;
 import com.vaadin.example.rest.data.CommentDTO;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.grid.Grid;
-import com.vaadin.flow.component.html.Main;
 import com.vaadin.flow.component.html.Span;
+import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
+import org.springframework.beans.factory.annotation.Autowired;
 
 @PageTitle("Asynchronous In-Memory DTO | Vaadin REST Examples")
 @Route(value = "async-in-memory-dto", layout = MainLayout.class)
-public class AsyncInMemoryDTOView extends Main {
+public class AsyncInMemoryDTOView extends VerticalLayout {
 
 	private final Grid<CommentDTO> commentsGrid;
 	private final Span statusLabel;
