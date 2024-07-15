@@ -5,12 +5,11 @@ import java.util.List;
 import java.util.stream.Stream;
 
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.stereotype.Service;
-import org.springframework.web.reactive.function.client.WebClient;
-import org.springframework.web.reactive.function.client.WebClient.RequestHeadersSpec;
+import org.springframework.web.client.RestClient;
 
 import com.fasterxml.jackson.databind.JsonNode;
-import com.vaadin.flow.data.provider.DataProvider;
 
 /**
  * Example Spring service that connects to a REST API.
@@ -24,8 +23,8 @@ import com.vaadin.flow.data.provider.DataProvider;
  * process the result JSON in the UI class instead. It fetches all available
  * results immediately.
  * <p>
- * {@link #fetchData(int, int)} and {@link #fetchCount()} demonstrate the two
- * methods needed for creating Lazy {@link DataProvider}s, where we don't fetch
+ * {@link #fetchData(int, int)}  demonstrate the two
+ * methods needed for creating lazy databinding, where we don't fetch
  * all results immediately, but only a portion at a time. This is done to reduce
  * unnecessary memory consumption.
  */
@@ -33,11 +32,12 @@ import com.vaadin.flow.data.provider.DataProvider;
 @Service
 public class RestClientService implements Serializable {
 
-	/**
-	 * The port changes depending on where we deploy the app
-	 */
-	@Value("${server.port}")
-	private String serverPort;
+	private final RestClient jsonplaceholderClient = RestClient.create("https://jsonplaceholder.typicode.com");
+	private final RestClient localClient;
+
+	public RestClientService(@Value("${server.port}") String serverPort) {
+		localClient = RestClient.create("http://localhost:" + serverPort );
+	}
 
 	/**
 	 * Returns parsed {@link CommentDTO} objects from the REST service.
@@ -49,11 +49,10 @@ public class RestClientService implements Serializable {
 		System.out.println("Fetching all Comment objects through REST..");
 
 		// Fetch from 3rd party API; configure fetch
-		final RequestHeadersSpec<?> spec = WebClient.create().get()
-				.uri("https://jsonplaceholder.typicode.com/comments");
 
 		// do fetch and map result
-		final List<CommentDTO> comments = spec.retrieve().toEntityList(CommentDTO.class).block().getBody();
+		List<CommentDTO> comments = jsonplaceholderClient.get().uri("comments").retrieve()
+				.body(new ParameterizedTypeReference<>() {});
 
 		System.out.println(String.format("...received %d items.", comments.size()));
 
@@ -70,11 +69,9 @@ public class RestClientService implements Serializable {
 
 		System.out.println("Fetching all Post objects through REST..");
 
-		// Fetch from 3rd party API; configure fetch
-		final RequestHeadersSpec<?> spec = WebClient.create().get().uri("https://jsonplaceholder.typicode.com/posts");
-
-		// do fetch and map result
-		final List<JsonNode> posts = spec.retrieve().toEntityList(JsonNode.class).block().getBody();
+		// do fetch and use Jackson's raw JsonNode instead of properly mapped DTO
+		final List<JsonNode> posts = jsonplaceholderClient.get().uri("posts").retrieve()
+				.body(new ParameterizedTypeReference<>() {});
 
 		System.out.println(String.format("...received %d items.", posts.size()));
 
@@ -86,40 +83,24 @@ public class RestClientService implements Serializable {
 	 * Fetches the specified amount of data items starting from index 'offset' from
 	 * the REST API.
 	 */
-	public Stream<DataDTO> fetchData(int count, int offset) {
+	public Stream<MessageDTO> fetchData(int limit, int offset) {
+		System.out.println(String.format("Fetching partial data set %d through %d...", offset, offset + limit));
 
-		System.out.println(String.format("Fetching partial data set %d through %d...", offset, offset + count));
 
 		// We use a local provider for this bigger data set.
-		// The API has two methods, 'data' and 'count'.
+		// The API has two parameters, 'count' and 'offset'.
 
 		// Other than that, this method is similar to #getAllComments().
-		final String url = String.format("http://localhost:" + serverPort + "/data?count=%d&offset=%d", count, offset);
-
-		final RequestHeadersSpec<?> spec = WebClient.create().get().uri(url);
-		final List<DataDTO> posts = spec.retrieve().toEntityList(DataDTO.class).block().getBody();
+		final List<MessageDTO> posts = localClient.get().uri(uriBuilder ->
+            uriBuilder.path("data")
+					.queryParam("limit", limit)
+					.queryParam("offset", offset)
+					.build())
+				.retrieve()
+				.body(new ParameterizedTypeReference<>() {});
 
 		System.out.println(String.format("...received %d items.", posts.size()));
 		return posts.stream();
-	}
-
-	/**
-	 * Fetches the total number of items available through the REST API
-	 */
-	public int fetchCount() {
-
-		System.out.println("fetching count...");
-
-		// We use a local provider for this bigger data set.
-		// The API has two methods, 'data' and 'count'.
-		final String url = String.format("http://localhost:" + serverPort + "/count");
-
-		final RequestHeadersSpec<?> spec = WebClient.create().get().uri(url);
-		final Integer response = spec.retrieve().toEntity(Integer.class).block().getBody();
-
-		System.out.println("...count is " + response);
-		return response;
-
 	}
 
 }

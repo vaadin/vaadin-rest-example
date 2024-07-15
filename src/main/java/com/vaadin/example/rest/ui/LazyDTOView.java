@@ -1,12 +1,9 @@
 package com.vaadin.example.rest.ui;
 
-import com.vaadin.example.rest.data.DataDTO;
+import com.vaadin.example.rest.data.MessageDTO;
 import com.vaadin.example.rest.data.RestClientService;
-import com.vaadin.flow.component.button.Button;
-import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
-import com.vaadin.flow.data.provider.DataProvider;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,24 +24,14 @@ public class LazyDTOView extends VerticalLayout {
 		// We need two methods in the API; a method that returns a specific number of
 		// items, and a method that returns the total amount of available data as an
 		// integer.
-		final Grid<DataDTO> dataGrid = new Grid<DataDTO>();
+		final Grid<MessageDTO> dataGrid = new Grid<MessageDTO>();
 
-		dataGrid.addColumn(DataDTO::getTitle).setHeader("Post title").setWidth("300px");
-		dataGrid.addColumn(DataDTO::getMessage).setHeader("Post body").getFlexGrow();
+		dataGrid.addColumn(MessageDTO::getTitle).setHeader("Post title").setWidth("300px");
+		dataGrid.addColumn(MessageDTO::getMessage).setHeader("Post body").getFlexGrow();
 
-		final Button fetchData = new Button("Create lazy provider", e -> {
+		// Giving Grid a callback it can utilize to fetch data as needed when the user scrolls
+		dataGrid.setItems( q -> service.fetchData(q.getLimit(), q.getOffset()));
 
-			// Here we give the DataProvider our two callback methods. The Grid will call
-			// them on demand. The second type in the declaration (Void) is a filter type;
-			// we won't use filters in this example.
-			final DataProvider<DataDTO, Void> lazyProvider = DataProvider
-					.fromCallbacks(q -> service.fetchData(q.getLimit(), q.getOffset()), q -> service.fetchCount());
-
-			dataGrid.setDataProvider(lazyProvider);
-		});
-
-		fetchData.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
-
-		add(fetchData, dataGrid);
+		add(dataGrid);
 	}
 }

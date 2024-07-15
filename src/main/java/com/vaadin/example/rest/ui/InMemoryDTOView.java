@@ -17,7 +17,7 @@ public class InMemoryDTOView extends VerticalLayout {
 	public InMemoryDTOView(@Autowired RestClientService service) {
 		// First example uses a Data Transfer Object (DTO) class that we've created. The
 		// Vaadin Grid works well with entity classes, so this is quite straightforward:
-		final Grid<CommentDTO> commentsGrid = new Grid<CommentDTO>(CommentDTO.class);
+		final Grid<CommentDTO> commentsGrid = new Grid<>(CommentDTO.class);
 
 		// Fetch all entities and show
 		final Button fetchComments = new Button("Fetch all comments",

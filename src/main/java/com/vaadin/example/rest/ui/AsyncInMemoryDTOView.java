@@ -2,6 +2,7 @@ package com.vaadin.example.rest.ui;
 
 import com.vaadin.example.rest.data.AsyncRestClientService;
 import com.vaadin.example.rest.data.CommentDTO;
+import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.grid.Grid;
@@ -45,6 +46,8 @@ public class AsyncInMemoryDTOView extends VerticalLayout {
 		statusLabel.setVisible(true);
 		commentsGrid.setEnabled(false);
 
+		final UI ui = getUI().get();
+
 		// Calling the service to start the op. The callback e provide is called when
 		// the results are available.
 		service.getAllCommentsAsync(result -> {
@@ -52,7 +55,7 @@ public class AsyncInMemoryDTOView extends VerticalLayout {
 			// We now have the results. But, because this call might happen outside normal
 			// Vaadin calls, we need to make sure the HTTP Session data of this app isn't
 			// violated. For this we use UI#access()
-			getUI().get().access(() -> {
+			ui.access(() -> {
 
 				// Finally, we can modify the UI state. These changes are sent to the users
 				// browser immediately, because we have enable Websocket Server Push (@Push

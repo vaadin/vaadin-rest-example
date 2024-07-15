@@ -1,9 +1,9 @@
 package backend.restprovider;
 
 /**
- * Backend data entity used in {@link RESTProvider}.
+ * Backend data entity used in {@link MessageController}.
  */
-public class RESTData {
+public class MessageDto {
 
 	private int id;
 	private String title;

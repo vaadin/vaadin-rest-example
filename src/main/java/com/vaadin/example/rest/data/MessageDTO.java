@@ -3,7 +3,7 @@ package com.vaadin.example.rest.data;
 /**
  * DTO class for example 3, lazily fetching partial data with a DTO.
  */
-public class DataDTO {
+public class MessageDTO {
 
 	private int id;
 	private String title;
@@ -40,10 +40,10 @@ public class DataDTO {
 
 	@Override
 	public boolean equals(Object obj) {
-		if (obj == null || !(obj instanceof DataDTO)) {
+		if (obj == null || !(obj instanceof MessageDTO)) {
 			return false;
 		}
 
-		return id == ((DataDTO) obj).id;
+		return id == ((MessageDTO) obj).id;
 	}
 }

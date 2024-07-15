@@ -20,7 +20,7 @@ import org.springframework.web.bind.annotation.RestController;
  * should not be taken as a production-ready implementation for REST services.
  */
 @RestController
-public class RESTProvider {
+public class MessageController {
 
 	private static final int MAX_COUNT = 500;
 	private static final int SIZE = 10000;
@@ -42,7 +42,7 @@ public class RESTProvider {
 	/**
 	 * Replacement for a DB. Is lazily populated by demand.
 	 */
-	private final TreeMap<Integer, RESTData> BACKEND = new TreeMap<>();
+	private final TreeMap<Integer, MessageDto> BACKEND = new TreeMap<>();
 
 	/**
 	 * REST API for getting the total count of items
@@ -59,22 +59,22 @@ public class RESTProvider {
 	 * <p>
 	 * GET http://localhost:8080/data?count=50&offset=400
 	 *
-	 * @param count  how many items should be returned
+	 * @param limit  how many items should be returned
 	 * @param offset from what index the data should start
 	 */
 	@GetMapping("/data")
-	public List<RESTData> data(int count, int offset) {
+	public List<MessageDto> data(int limit, int offset) {
 
-		System.out.println("Backend providing items " + offset + " to " + (offset + count));
-		if (count > MAX_COUNT || count + offset > SIZE) {
+		System.out.println("Backend providing items " + offset + " to " + (offset + limit));
+		if (limit > MAX_COUNT || limit + offset > SIZE) {
 			throw new RuntimeException("indexes outside bounds");
 		}
 
 		// make sure data is generated
-		ensureData(count, offset);
+		ensureData(limit, offset);
 
 		// fetch subset from the map
-		final List<RESTData> list = new ArrayList<>(BACKEND.subMap(offset, offset + count).values());
+		final List<MessageDto> list = new ArrayList<>(BACKEND.subMap(offset, offset + limit).values());
 
 		return list;
 	}
@@ -90,8 +90,8 @@ public class RESTProvider {
 		}
 	}
 
-	private RESTData generateDataItem(int dataIndex) {
-		final RESTData data = new RESTData();
+	private MessageDto generateDataItem(int dataIndex) {
+		final MessageDto data = new MessageDto();
 		data.setId(dataIndex);
 		data.setTitle(generateString(5).replace(".", "").replace(",", ""));
 		data.setMessage(generateString(15).replace(".", "").replace(",", ""));
