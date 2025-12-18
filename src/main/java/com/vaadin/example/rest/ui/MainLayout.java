@@ -1,5 +1,7 @@
 package com.vaadin.example.rest.ui;
 
+import com.vaadin.flow.server.auth.AnonymousAllowed;
+
 import com.vaadin.flow.component.applayout.AppLayout;
 import com.vaadin.flow.component.applayout.DrawerToggle;
 import com.vaadin.flow.component.html.H1;
@@ -20,6 +22,7 @@ import com.vaadin.flow.theme.lumo.LumoUtility;
  * 3rd party data is fetched from https://jsonplaceholder.typicode.com/ using
  * our {@link RestClientService) class.
  */
+@AnonymousAllowed
 public class MainLayout extends AppLayout implements AfterNavigationObserver {
 
 	private final H1 pageTitle;
