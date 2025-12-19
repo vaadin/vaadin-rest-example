@@ -1,6 +1,6 @@
 package com.vaadin.example.rest.ui;
 
-import com.fasterxml.jackson.databind.JsonNode;
+import tools.jackson.databind.JsonNode;
 import com.vaadin.example.rest.data.RestClientService;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
