@@ -5,7 +5,6 @@ import java.util.List;
 import java.util.Random;
 import java.util.TreeMap;
 
-import org.apache.commons.lang3.text.WordUtils;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -98,17 +97,28 @@ public class MessageController {
 		return data;
 	}
 
-	@SuppressWarnings("deprecation")
-	private String generateString(int numWords) {
-		final StringBuilder sb = new StringBuilder();
+    private String generateString(int numWords) {
+        StringBuilder sb = new StringBuilder();
 
-		for (int i = 0; i < numWords; i++) {
-			final String word = words[rand.nextInt(words.length)];
-			sb.append(word);
-			sb.append(" ");
-		}
+        for (int i = 0; i < numWords; i++) {
+            sb.append(words[rand.nextInt(words.length)]).append(" ");
+        }
 
-		return WordUtils.capitalizeFully(sb.toString().trim()) + ".";
-	}
+        return capitalizeFully(sb.toString().trim()) + ".";
+    }
+
+    private String capitalizeFully(String input) {
+        String[] parts = input.toLowerCase().split("\\s+");
+        StringBuilder result = new StringBuilder();
+
+        for (String part : parts) {
+            if (!part.isEmpty()) {
+                result.append(Character.toUpperCase(part.charAt(0)))
+                        .append(part.substring(1))
+                        .append(" ");
+            }
+        }
+        return result.toString().trim();
+    }
 
 }
